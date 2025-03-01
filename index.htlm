@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KLS Group Rental - Prenotazione Auto</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #0a2e50, #1565C0, #64B5F6);
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-top: 40px;
+    }
+    
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    
+    .subtitle {
+      font-size: 1.2rem;
+      color: #ddd;
+      margin-bottom: 30px;
+    }
+    
+    .language-toggle {
+      margin-top: 15px;
+    }
+    
+    .language-toggle button {
+      background-color: transparent;
+      color: #fff;
+      border: 1px solid #fff;
+      padding: 8px 15px;
+      margin: 0 5px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .language-toggle button.active {
+      background-color: #fff;
+      color: #1565C0;
+    }
+    
+    .booking-form {
+      background-color: rgba(255, 255, 255, 0.9);
+      border-radius: 10px;
+      padding: 30px;
+      color: #333;
+      max-width: 800px;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+    }
+    
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    
+    select, input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    
+    .radio-button-container {
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .radio-button-container label {
+      display: block;
+      padding: 15px;
+      background-color: #f8f8f8;
+      cursor: pointer;
+      margin: 0;
+      transition: all 0.3s;
+    }
+    
+    .radio-button-container label:hover {
+      background-color: #f1f1f1;
+    }
+    
+    .radio-button-container input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+    }
+    
+    .radio-button-container input[type="radio"]:checked + label {
+      background-color: #e8f5e9;
+      border-left: 4px solid #4CAF50;
+    }
+    
+    .radio-button-container.disabled label {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .vehicle-price {
+      font-weight: bold;
+      color: #4CAF50;
+      margin-top: 5px;
+    }
+    
+    .extras {
+      margin-top: 15px;
+    }
+    
+    .extra-option {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f8f8f8;
+      border-radius: 5px;
+    }
+    
+    .extra-option input {
+      width: auto;
+      margin-right: 10px;
+    }
+    
+    .total-section {
+      margin-top: 30px;
+      background-color: #f0f9ff;
+      border-radius: 5px;
+      padding: 20px;
+      font-size: 1.2rem;
+    }
+    
+    .total-price {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2196F3;
+    }
+    
+    .btn {
+      display: block;
+      width: 100%;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+      text-decoration: none;
+      border: none;
+    }
+    
+    .btn-primary {
+      background-color: #4CAF50;
+    }
+    
+    .btn-primary:hover {
+      background-color: #45a049;
+    }
+    
+    .btn-secondary {
+      background-color: #2196F3;
+    }
+    
+    .btn-secondary:hover {
+      background-color: #0b7dda;
+    }
+    
+    .btn-danger {
+      background-color: #f44336;
+    }
+    
+    .btn-danger:hover {
+      background-color: #d32f2f;
+    }
+    
+    .btn-stripe {
+      background-color: #6772E5;
+    }
+    
+    .btn-stripe:hover {
+      background-color: #5469d4;
+    }
+    
+    .btn-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    footer {
+      text-align: center;
+      padding: 20px;
+      margin-top: 40px;
+      color: #ddd;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    @media (max-width: 768px) {
+      .booking-form {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>KLS Group Rental</h1>
+      <p class="subtitle">Noleggio Auto - Servizio Premium nella Costa d'Amalfi<br>Car Rental - Premium Service on the Amalfi Coast</p>
+      <div class="language-toggle">
+        <button id="lang-it" class="active" onclick="changeLanguage('it')">Italiano</button>
+        <button id="lang-en" onclick="changeLanguage('en')">English</button>
+      </div>
+    </header>
+    
+    <!-- Form di prenotazione principale -->
+    <div id="booking-form" class="booking-form">
+      <h2 style="margin-bottom: 25px; text-align: center;" id="form-title">Prenota la tua Auto</h2>
+      
+      <div class="form-group">
+        <label for="pickup-location" id="pickup-location-label">Sede di Ritiro:</label>
+        <select id="pickup-location" onchange="updateForm()">
+          <option value="">Seleziona una sede / Select a location</option>
+          <option value="aeroporto">Aeroporto Costa d'Amalfi Salerno / Amalfi Coast Airport</option>
+          <option value="arbostella">Arbostella</option>
+          <option value="stazione">Stazione di Salerno / Salerno Station</option>
+          <option value="marina">Marina d'Arechi</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="pickup-date" id="pickup-date-label">Data e Ora di Ritiro:</label>
+        <div style="display: flex; gap: 10px;">
+          <input type="date" id="pickup-date" style="width: 60%;" onchange="updateForm()">
+          <input type="time" id="pickup-time" style="width: 40%;">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="return-location" id="return-location-label">Sede di Consegna:</label>
+        <select id="return-location" onchange="updateForm()">
+          <option value="">Seleziona una sede / Select a location</option>
+          <option value="aeroporto">Aeroporto Costa d'Amalfi Salerno / Amalfi Coast Airport</option>
+          <option value="arbostella">Arbostella</option>
+          <option value="stazione">Stazione di Salerno / Salerno Station</option>
+          <option value="marina">Marina d'Arechi</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="return-date" id="return-date-label">Data e Ora di Consegna:</label>
+        <div style="display: flex; gap: 10px;">
+          <input type="date" id="return-date" style="width: 60%;" onchange="updateForm()">
+          <input type="time" id="return-time" style="width: 40%;">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label id="vehicle-category-label">Scegli Categoria Veicolo:</label>
+        
+        <!-- Radio button per selezione veicolo -->
+        <div class="radio-button-container" id="city-container">
+          <input type="radio" id="vehicle-city" name="vehicle-type" value="city" onchange="selectVehicle('city', 45)">
+          <label for="vehicle-city">
+            <h3>City</h3>
+            <p id="city-description">Veicolo compatto ideale per la città</p>
+            <p class="vehicle-price">€45,00 / giorno</p>
+          </label>
+        </div>
+        
+        <div class="radio-button-container" id="medium-container">
+          <input type="radio" id="vehicle-medium" name="vehicle-type" value="medium" onchange="selectVehicle('medium', 55)">
+          <label for="vehicle-medium">
+            <h3>Medium</h3>
+            <p id="medium-description">Vettura media per viaggi comodi</p>
+            <p class="vehicle-price">€55,00 / giorno</p>
+          </label>
+        </div>
+        
+        <div class="radio-button-container" id="suv-container">
+          <input type="radio" id="vehicle-suv" name="vehicle-type" value="suv" onchange="selectVehicle('suv', 85)">
+          <label for="vehicle-suv">
+            <h3>SUV</h3>
+            <p id="suv-description">SUV spazioso per ogni esigenza</p>
+            <p class="vehicle-price">€85,00 / giorno</p>
+          </label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label id="options-label">Servizi Opzionali:</label>
+        <div class="extras">
+          <div class="extra-option">
+            <input type="checkbox" id="kasko" onchange="updateTotal()" data-price="37" disabled>
+            <label for="kasko" id="kasko-label">Kasko - Copertura completa (€37,00 / giorno)</label>
+          </div>
+          
+          <div class="extra-option">
+            <input type="checkbox" id="seggiolino" onchange="updateTotal()" data-price="10" disabled>
+            <label for="seggiolino" id="childSeat-label">Seggiolino bambini (€10,00 / giorno)</label>
+          </div>
+          
+          <div class="extra-option">
+            <input type="checkbox" id="gps" onchange="updateTotal()" data-price="8" disabled>
+            <label for="gps" id="gps-label">Navigatore GPS (€8,00 / giorno)</label>
+          </div>
+          
+          <div class="extra-option">
+            <input type="checkbox" id="wifi" onchange="updateTotal()" data-price="12" disabled>
+            <label for="wifi" id="wifi-label">WiFi portatile (€12,00 / giorno)</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="days" id="days-label">Numero di Giorni (calcolato automaticamente):</label>
+        <input type="number" id="days" min="1" value="1" readonly style="background-color: #f8f8f8;">
+      </div>
+      
+      <div class="total-section">
+        <p><span id="total-label">Totale Prenotazione:</span> <span class="total-price" id="total">€0,00</span></p>
+      </div>
+      
+      <button id="book-button" class="btn btn-primary btn-disabled" onclick="showSummary()">Prenota Ora</button>
+      <a href="tel:+393892148048" class="btn btn-secondary" id="call-button">Chiama per Assistenza</a>
+    </div>
+    
+    <!-- Riepilogo prenotazione (inizialmente nascosto) -->
+    <div id="summary-form" class="booking-form hidden">
+      <h2 style="margin-bottom: 25px; text-align: center;" id="summary-title">Riepilogo Prenotazione</h2>
+      
+      <div id="summary-details" style="margin-bottom: 30px;">
+        <!-- Contenuto generato dinamicamente -->
+      </div>
+      
+      <h3 style="margin-bottom: 15px;" id="complete-booking-title">Completa la prenotazione</h3>
+      
+      <a href="https://buy.stripe.com/eVa5nQgzVbvn4ogbJ2" target="_blank" class="btn btn-stripe" id="deposit-button">
+        <i class="fas fa-credit-card"></i> <span id="deposit-button-text">Paga anticipo di €50</span>
+      </a>
+      
+      <p class="payment-info" id="payment-info" style="text-align: center; margin: 15px 0;">
+        Il saldo sarà da pagare al ritiro del veicolo
+      </p>
+      
+      <a href="tel:+393892148048" class="btn btn-secondary" id="confirm-call-button">
+        <i class="fas fa-phone"></i> <span id="confirm-call-text">Chiama per confermare</span>
+      </a>
+      
+      <button class="btn btn-danger" onclick="window.location.reload()" id="cancel-button">
+        <span id="cancel-button-text">Annulla e ricomincia</span>
+      </button>
+    </div>
+    
+    <footer>
+      <p id="footer-text">&copy; 2025 KLS Group Rental - Tutti i diritti riservati</p>
+    </footer>
+  </div>
+  
+  <script>
+    // Variabili globali
+    let selectedVehicle = null;
+    let vehiclePrice = 0;
+    let currentLang = 'it';
+    
+    // Traduzione testi
+    const translations = {
+      'it': {
+        'form-title': 'Prenota la tua Auto',
+        'pickup-location-label': 'Sede di Ritiro:',
+        'pickup-date-label': 'Data e Ora di Ritiro:',
+        'return-location-label': 'Sede di Consegna:',
+        'return-date-label': 'Data e Ora di Consegna:',
+        'vehicle-category-label': 'Scegli Categoria Veicolo:',
+        'city-description': 'Veicolo compatto ideale per la città',
+        'medium-description': 'Vettura media per viaggi comodi',
+        'suv-description': 'SUV spazioso per ogni esigenza',
+        'options-label': 'Servizi Opzionali:',
+        'kasko-label': 'Kasko - Copertura completa (€37,00 / giorno)',
+        'childSeat-label': 'Seggiolino bambini (€10,00 / giorno)',
+        'gps-label': 'Navigatore GPS (€8,00 / giorno)',
+        'wifi-label': 'WiFi portatile (€12,00 / giorno)',
+        'days-label': 'Numero di Giorni (calcolato automaticamente):',
+        'total-label': 'Totale Prenotazione:',
+        'book-button': 'Prenota Ora',
+        'call-button': 'Chiama per Assistenza',
+        'summary-title': 'Riepilogo Prenotazione',
+        'complete-booking-title': 'Completa la prenotazione',
+        'deposit-button-text': 'Paga anticipo di €50',
+        'payment-info': 'Il saldo sarà da pagare al ritiro del veicolo',
+        'confirm-call-text': 'Chiama per confermare',
+        'cancel-button-text': 'Annulla e ricomincia',
+        'footer-text': '© 2025 KLS Group Rental - Tutti i diritti riservati',
+        'pickup': 'Ritiro',
+        'dropoff': 'Consegna',
+        'vehicle': 'Veicolo',
+        'total': 'Totale'
+      },
+      'en': {
+        'form-title': 'Book Your Car',
+        'pickup-location-label': 'Pick-up Location:',
+        'pickup-date-label': 'Pick-up Date and Time:',
+        'return-location-label': 'Drop-off Location:',
+        'return-date-label': 'Drop-off Date and Time:',
+        'vehicle-category-label': 'Choose Vehicle Category:',
+        'city-description': 'Compact vehicle ideal for city driving',
+        'medium-description': 'Medium-sized car for comfortable trips',
+        'suv-description': 'Spacious SUV for all your needs',
+        'options-label': 'Optional Services:',
+        'kasko-label': 'Full Insurance Coverage (€37.00 / day)',
+        'childSeat-label': 'Child Seat (€10.00 / day)',
+        'gps-label': 'GPS Navigation (€8.00 / day)',
+        'wifi-label': 'Portable WiFi (€12.00 / day)',
+        'days-label': 'Number of Days (automatically calculated):',
+        'total-label': 'Total Booking:',
+        'book-button': 'Book Now',
+        'call-button': 'Call for Assistance',
+        'summary-title': 'Booking Summary',
+        'complete-booking-title': 'Complete your booking',
+        'deposit-button-text': 'Pay €50 deposit',
+        'payment-info': 'The balance will be due at vehicle pick-up',
+        'confirm-call-text': 'Call to confirm',
+        'cancel-button-text': 'Cancel and restart',
+        'footer-text': '© 2025 KLS Group Rental - All rights reserved',
+        'pickup': 'Pick-up',
+        'dropoff': 'Drop-off',
+        'vehicle': 'Vehicle',
+        'total': 'Total'
+      }
+    };
+    
+    // Inizializzazione alla caricamento della pagina
+    window.onload = function() {
+      // Imposta date minime
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('pickup-date').min = today;
+      document.getElementById('return-date').min = today;
+      
+      // Imposta date di default
+      document.getElementById('pickup-date').value = today;
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('return-date').value = tomorrow.toISOString().split('T')[0];
+      
+      // Imposta orari di default
+      document.getElementById('pickup-time').value = "10:00";
+      document.getElementById('return-time').value = "10:00";
+      
+      // Disabilita opzioni veicolo
+      updateVehicleOptions();
+      
+      // Imposta lingua
+      changeLanguage('it');
+      
+      // Aggiorna totale
+      updateTotal();
+    };
+    
+    // Cambio lingua
+    function changeLanguage(lang) {
+      currentLang = lang;
+      
+      // Aggiorna classi dei pulsanti
+      document.getElementById('lang-it').classList.toggle('active', lang === 'it');
+      document.getElementById('lang-en').classList.toggle('active', lang === 'en');
+      
+      // Aggiorna testi
+      for (const [key, value] of Object.entries(translations[lang])) {
+        const element = document.getElementById(key);
+        if (element) {
+          if (element.tagName === "BUTTON" || element.tagName === "SPAN") {
+            element.textContent = value;
+          } else {
+            element.innerHTML = value;
+          }
+        }
+      }
+      
+      // Aggiorna testo del pulsante prenota in base alla classe
+      const bookButton = document.getElementById('book-button');
+      bookButton.textContent = translations[lang]['book-button'];
+    }
+    
+    // Aggiorna visibilità opzioni veicolo
+    function updateVehicleOptions() {
+      const pickupLocation = document.getElementById('pickup-location').value;
+      const returnLocation = document.getElementById('return-location').value;
+      
+      const vehicleRadios = document.querySelectorAll('input[name="vehicle-type"]');
+      const vehicleContainers = document.querySelectorAll('.radio-button-container');
+      
+      if (pickupLocation && returnLocation) {
+        vehicleRadios.forEach(radio => {
+          radio.disabled = false;
+        });
+        vehicleContainers.forEach(container => {
+          container.classList.remove('disabled');
+        });
+      } else {
+        vehicleRadios.forEach(radio => {
+          radio.disabled = true;
+        });
+        vehicleContainers.forEach(container => {
+          container.classList.add('disabled');
+        });
+      }
+    }
+    
+    // Aggiorna il form quando cambiano le sedi o le date
+    function updateForm() {
+      updateVehicleOptions();
+      updateTotal();
+    }
+    
+    // Seleziona veicolo
+    function selectVehicle(type, price) {
+      const pickupLocation = document.getElementById('pickup-location').value;
+      const returnLocation = document.getElementById('return-location').value;
+      
+      if (!pickupLocation || !returnLocation) {
+        alert(currentLang === 'it' 
+              ? 'Seleziona prima le sedi di ritiro e consegna' 
+              : 'Select pick-up and drop-off locations first');
+        return;
+      }
+      
+      // Aggiorna variabili globali
+      selectedVehicle = type;
+      vehiclePrice = price;
+      
+      // Abilita opzioni extra
+      document.querySelectorAll('.extra-option input').forEach(input => {
+        input.disabled = false;
+      });
+      
+      // Aggiorna totale
+      updateTotal();
+    }
+    
+    // Aggiorna totale
+    function updateTotal() {
+      // Calcola giorni
+      const pickupDate = document.getElementById('pickup-date').value;
+      const returnDate = document.getElementById('return-date').value;
+      
+      let days = 1;
+      if (pickupDate && returnDate) {
+        const start = new Date(pickupDate);
+        const end = new Date(returnDate);
+        const diffTime = Math.abs(end - start);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays > 0) {
+          days = diffDays;
+        }
+      }
+      
+      // Aggiorna campo giorni
+      document.getElementById('days').value = days;
+      
+      // Calcola prezzo base
+      let total = 0;
+      if (selectedVehicle) {
+        total = vehiclePrice * days;
+        
+        // Aggiungi extra
+        document.querySelectorAll('.extra-option input:checked').forEach(input => {
+          total += parseFloat(input.getAttribute('data-price')) * days;
+        });
+      }
+      
+      // Aggiorna display totale
+      document.getElementById('total').textContent = '€' + total.toFixed(2);
+      
+      // Abilita/disabilita pulsante prenotazione
+      const bookButton = document.getElementById('book-button');
+      if (selectedVehicle && document.getElementById('pickup-location').value && document.getElementById('return-location').value) {
+        bookButton.classList.remove('btn-disabled');
+      } else {
+        bookButton.classList.add('btn-disabled');
+      }
+    }
+    
+    // Mostra il riepilogo
+    function showSummary() {
+      // Verifica se tutti i campi necessari sono compilati
+      if (!selectedVehicle || !document.getElementById('pickup-location').value || !document.getElementById('return-location').value) {
+        alert(currentLang === 'it' 
+              ? 'Per favore, compila tutti i campi richiesti' 
+              : 'Please fill in all required fields');
+        return;
+      }
+      
+      // Ottieni valori selezionati
+      const pickupLocationSelect = document.getElementById('pickup-location');
+      const returnLocationSelect = document.getElementById('return-location');
+      
+      const pickupLocationText = pickupLocationSelect.options[pickupLocationSelect.selectedIndex].text;
+      const returnLocationText = returnLocationSelect.options[returnLocationSelect.selectedIndex].text;
+      
+      const pickupDate = document.getElementById('pickup-date').value;
+      const pickupTime = document.getElementById('pickup-time').value;
+      const returnDate = document.getElementById('return-date').value;
+      const returnTime = document.getElementById('return-time').value;
+      const totalPrice = document.getElementById('total').textContent;
+      
+      // Genera HTML dettagli prenotazione
+      const details = document.getElementById('summary-details');
+      details.innerHTML = `
+        <p><strong>${translations[currentLang].pickup}:</strong> ${pickupLocationText}</p>
+        <p><strong>${translations[currentLang].pickup} ${currentLang === 'it' ? 'data' : 'date'}:</strong> ${pickupDate} ${pickupTime}</p>
+        <p><strong>${translations[currentLang].dropoff}:</strong> ${returnLocationText}</p>
+        <p><strong>${translations[currentLang].dropoff} ${currentLang === 'it' ? 'data' : 'date'}:</strong> ${returnDate} ${returnTime}</p>
+        <p><strong>${translations[currentLang].vehicle}:</strong> ${selectedVehicle.toUpperCase()}</p>
+        <p><strong>${translations[currentLang].total}:</strong> ${totalPrice}</p>
+      `;
+      
+      // Nascondi form principale e mostra riepilogo
+      document.getElementById('booking-form').classList.add('hidden');
+      document.getElementById('summary-form').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
